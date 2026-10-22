@@ -1,18 +1,23 @@
-"""Train a Transformer NMT model on one language pair (baseline) or on several related
-pairs at once (mixed training).
+"""Train a Transformer NMT model for the paper's experiments.
 
-    --langs gamo                      single-pair baseline
-    --langs gamo gofa dawuro --tags   mixed training with source-language tags
+    baseline        --train-langs gamo
+    Exp 1 (TL)      parent:  --train-langs wolaita
+                    child:   --train-langs gamo --init-from runs/exp1_parent
+    Exp 2           --support-langs wolaita --train-langs gamo
+    Exp 3 (0-shot)  --support-langs wolaita --eval-langs gamo gofa dawuro   (with the zero-shot splits)
+    Exp 4           --support-langs wolaita gofa dawuro --train-langs gamo
+    English -> X    add --reverse
 
-Optimisation follows Vaswani et al. (2017): Adam (0.9, 0.98), inverse-square-root
-warm-up schedule, label smoothing 0.1. The checkpoint with the best average dev BLEU
-across the trained pairs is kept.
+Settings follow the paper (Table 2): 6 encoder and 6 decoder layers, model size 512,
+Adam with learning rate 1e-4, dropout 0.3, token-based batches of 3,072 tokens, BPE
+subwords. The checkpoint with the best average dev BLEU is kept.
 """
 from __future__ import annotations
 
 import argparse
 import json
 import random
+import shutil
 from pathlib import Path
 
 import numpy as np
@@ -23,7 +28,7 @@ import yaml
 from .data import lang_tag, load_corpus
 from .evaluate import bleu
 from .model import Seq2SeqTransformer
-from .tokenizer import PAD, train_bpe
+from .tokenizer import PAD, Tokenizer, train_bpe
 from .translate import translate_lines
 
 
@@ -34,7 +39,7 @@ def set_seed(seed: int):
 
 
 def make_batches(pairs, tok, max_len, max_tokens, seed):
-    """Length-bucketed batches of (src, tgt) id tensors."""
+    """Length-bucketed batches of (src, tgt) id tensors with about ``max_tokens`` tokens each."""
     enc = [(tok.encode(s, max_len), tok.encode(t, max_len)) for s, t in pairs]
     enc.sort(key=lambda p: (len(p[0]), len(p[1])))
     batches, cur, width = [], [], 0
@@ -54,11 +59,25 @@ def make_batches(pairs, tok, max_len, max_tokens, seed):
     return [(pad([s for s, _ in b]), pad([t for _, t in b])) for b in batches]
 
 
+def make_scheduler(opt, t, d_model):
+    if t.get("schedule", "constant") == "noam":
+        warmup, factor = t["warmup_steps"], float(t["lr_factor"])
+        for g in opt.param_groups:
+            g["lr"] = 1.0
+        return torch.optim.lr_scheduler.LambdaLR(
+            opt, lambda s: factor * d_model ** -0.5 * min((s + 1) ** -0.5, (s + 1) * warmup ** -1.5))
+    return None
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--data-dir", required=True)
-    ap.add_argument("--langs", nargs="+", required=True)
-    ap.add_argument("--tags", action="store_true", help="prefix each source sentence with <lang>")
+    ap.add_argument("--train-langs", nargs="*", default=[], help="languages whose training split is used")
+    ap.add_argument("--support-langs", nargs="*", default=[], help="languages whose data is used in full")
+    ap.add_argument("--eval-langs", nargs="*", default=None, help="dev/test languages (default: --train-langs)")
+    ap.add_argument("--reverse", action="store_true", help="translate English -> Ethiopian language")
+    ap.add_argument("--tags", action="store_true", help="prefix sentences with a <lang> tag (not used in the paper)")
+    ap.add_argument("--init-from", default=None, help="parent run to fine-tune from (Exp 1, transfer learning)")
     ap.add_argument("--config", default="configs/transformer.yaml")
     ap.add_argument("--out", required=True)
     ap.add_argument("--seed", type=int, default=42)
@@ -70,22 +89,33 @@ def main(argv=None):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
+    eval_langs = args.eval_langs if args.eval_langs is not None else (args.train_langs or args.support_langs)
 
-    corpus = load_corpus(args.data_dir, args.langs, args.tags, args.seed)
-    print(f"training pairs: {len(corpus.train)} from {args.langs} (tags={args.tags})")
-    tags = [lang_tag(l) for l in args.langs] if args.tags else []
-    tok = train_bpe([s for s, _ in corpus.train] + [x for _, x in corpus.train], out / "spm",
-                    t["vocab_size"], tags)
+    corpus = load_corpus(args.data_dir, args.train_langs, args.support_langs, eval_langs, args.reverse,
+                         args.tags, args.seed)
+    print(f"training pairs: {len(corpus.train):,}  support={args.support_langs}  train={args.train_langs}  "
+          f"eval={eval_langs}  direction={'en->X' if args.reverse else 'X->en'}")
+
+    if args.init_from:  # transfer learning: reuse the parent's vocabulary, architecture and weights
+        parent = Path(args.init_from)
+        shutil.copy(parent / "spm.model", out / "spm.model")
+        tok = Tokenizer(out / "spm.model")
+        m = json.loads((parent / "meta.json").read_text())["model"]
+    else:
+        tags = [lang_tag(l) for l in set(args.train_langs) | set(args.support_langs) | set(eval_langs)] if args.tags else []
+        tok = train_bpe([s for s, _ in corpus.train] + [x for _, x in corpus.train], out / "spm", t["vocab_size"], tags)
     batches = make_batches(corpus.train, tok, t["max_len"], t["max_tokens"], args.seed)
 
     model = Seq2SeqTransformer(len(tok), m["d_model"], m["heads"], m["layers"], m["ff_dim"], m["dropout"]).to(device)
-    opt = torch.optim.Adam(model.parameters(), lr=1.0, betas=(0.9, 0.98), eps=1e-9)
-    warmup, factor = t["warmup_steps"], float(t["lr_factor"])
-    sched = torch.optim.lr_scheduler.LambdaLR(
-        opt, lambda s: factor * m["d_model"] ** -0.5 * min((s + 1) ** -0.5, (s + 1) * warmup ** -1.5))
+    if args.init_from:
+        model.load_state_dict(torch.load(Path(args.init_from) / "model.pt", map_location=device))
+    opt = torch.optim.Adam(model.parameters(), lr=float(t["learning_rate"]), betas=(0.9, 0.98), eps=1e-9)
+    sched = make_scheduler(opt, t, m["d_model"])
     loss_fn = nn.CrossEntropyLoss(ignore_index=PAD, label_smoothing=t["label_smoothing"])
 
-    meta = {"langs": args.langs, "tags": args.tags, "max_len": t["max_len"], "model": m}
+    meta = {"train_langs": args.train_langs, "support_langs": args.support_langs, "eval_langs": eval_langs,
+            "reverse": args.reverse, "tags": args.tags, "init_from": args.init_from,
+            "max_len": t["max_len"], "model": m}
     (out / "meta.json").write_text(json.dumps(meta, indent=2))
     best, bad = -1.0, 0
     for epoch in range(1, t["epochs"] + 1):
@@ -99,7 +129,8 @@ def main(argv=None):
             loss.backward()
             nn.utils.clip_grad_norm_(model.parameters(), t["clip_norm"])
             opt.step()
-            sched.step()
+            if sched:
+                sched.step()
             n = tgt[:, 1:].ne(PAD).sum().item()
             total, ntok = total + loss.item() * n, ntok + n
 

@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 message: "If you use this code, please cite the paper below."
 title: "Neural Machine Translation for Low-Resource Ethiopian Languages with Mixed Training"
-repository-code: "https://github.com/marif561/Neural-Machine-Translation-for-Low-Resource-Languages"
+repository-code: "https://github.com/marif561/Neural-Machine-Translation-for-Low-Resource-Languages-"
 license: MIT
 authors:
   - family-names: Tonja

@@ -1,0 +1,9 @@
+language,pair,sentences,tokens,types,avg_words_per_sentence
+Wolaita,Wolaita-English,26943,469851,42049,17
+English,Wolaita-English,26943,703122,12131,26
+Gamo,Gamo-English,7866,125509,23589,16
+English,Gamo-English,7866,177410,11078,23
+Gofa,Gofa-English,7928,119289,25301,15
+English,Gofa-English,7928,175727,8769,22
+Dawuro,Dawuro-English,7804,126734,17392,16
+English,Dawuro-English,7804,207954,4368,27

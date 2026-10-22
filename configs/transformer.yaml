@@ -1,20 +1,20 @@
-# Transformer settings for low-resource NMT.
-# These are common defaults for small parallel corpora, NOT values taken from the paper;
-# replace them with the paper's configuration where it differs.
+# Settings from the paper (Table 2). The original runs used OpenNMT-tf on Google Colab Pro+.
 model:
+  layers: 6             # encoder layers = decoder layers = 6
   d_model: 512
-  heads: 8
-  layers: 6
-  ff_dim: 2048
-  dropout: 0.3          # higher dropout helps on small corpora
+  heads: 8              # OpenNMT-tf Transformer default (not listed in Table 2)
+  ff_dim: 2048          # OpenNMT-tf Transformer default (not listed in Table 2)
+  dropout: 0.3
 
 train:
-  vocab_size: 8000      # joint SentencePiece BPE vocabulary
-  max_len: 128          # tokens per sentence, including BOS/EOS
-  max_tokens: 4096      # tokens per batch
+  learning_rate: 1.0e-4 # Adam
+  schedule: constant    # "noam" for the inverse-square-root warm-up schedule instead
+  max_tokens: 3072      # batch size 3,072, batch type: tokens
+  vocab_size: 8000      # joint BPE vocabulary (size not given in the paper)
+  max_len: 128          # not given in the paper
   epochs: 100
-  patience: 10          # early stopping on average dev BLEU
-  warmup_steps: 4000
-  lr_factor: 2.0
-  label_smoothing: 0.1
+  patience: 10          # early stopping on average dev BLEU (not given in the paper)
+  label_smoothing: 0.1  # OpenNMT-tf default
   clip_norm: 1.0
+  warmup_steps: 4000    # only used with schedule: noam
+  lr_factor: 2.0        # only used with schedule: noam

@@ -1,0 +1,13 @@
+method,language,bleu_english_to_x,bleu_x_to_english
+Tonja et al. 2021,Gamo,2.2,4.1
+Tonja et al. 2021,Gofa,2.4,4.5
+Tonja et al. 2021,Dawuro,2.1,3.6
+Yigezu et al. 2021,Gamo,,3.4
+Yigezu et al. 2021,Gofa,,4.5
+Yigezu et al. 2021,Dawuro,,2.5
+Proposed (Exp2),Gamo,2.0,6.5
+Proposed (Exp2),Gofa,2.9,7.2
+Proposed (Exp2),Dawuro,2.6,6.2
+Proposed (Exp4),Gamo,1.5,9.4
+Proposed (Exp4),Gofa,2.1,9.5
+Proposed (Exp4),Dawuro,1.8,7.3

@@ -1,46 +1,56 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 300" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 330" font-family="Segoe UI, Helvetica, Arial, sans-serif">
   <defs>
     <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
       <path d="M0,0 L10,5 L0,10 z" fill="#57606a"/>
     </marker>
     <style>
-      .t{font-size:15px;font-weight:600;fill:#1f2328;text-anchor:middle}
+      .t{font-size:14px;font-weight:600;fill:#1f2328;text-anchor:middle}
       .s{font-size:12px;fill:#57606a;text-anchor:middle}
       .ln{stroke:#57606a;stroke-width:1.6;fill:none;marker-end:url(#a)}
     </style>
   </defs>
-  <rect width="960" height="300" fill="#ffffff"/>
-  <text x="480" y="30" font-size="18" font-weight="700" fill="#1f2328" text-anchor="middle">Mixed training for related low-resource languages</text>
+  <rect width="960" height="330" fill="#ffffff"/>
+  <text x="480" y="28" font-size="18" font-weight="700" fill="#1f2328" text-anchor="middle">Mixed training for related Omotic languages (example: target = Dawuro)</text>
 
-  <rect x="20" y="60" width="200" height="50" rx="8" fill="#ddf4ff" stroke="#54aeff" stroke-width="1.5"/>
-  <text class="t" x="120" y="84">Gamo – English</text>
-  <text class="s" x="120" y="101">small parallel corpus</text>
-  <rect x="20" y="125" width="200" height="50" rx="8" fill="#dafbe1" stroke="#4ac26b" stroke-width="1.5"/>
-  <text class="t" x="120" y="149">Gofa – English</text>
-  <text class="s" x="120" y="166">small parallel corpus</text>
-  <rect x="20" y="190" width="200" height="50" rx="8" fill="#fff8c5" stroke="#d4a72c" stroke-width="1.5"/>
-  <text class="t" x="120" y="214">Dawuro – English</text>
-  <text class="s" x="120" y="231">small parallel corpus</text>
+  <rect x="20" y="50" width="190" height="46" rx="8" fill="#f6f8fa" stroke="#d0d7de" stroke-width="1.5"/>
+  <text class="t" x="115" y="70">Wolaita – English</text>
+  <text class="s" x="115" y="87">26,943 pairs · all data</text>
+  <rect x="20" y="106" width="190" height="46" rx="8" fill="#f6f8fa" stroke="#d0d7de" stroke-width="1.5"/>
+  <text class="t" x="115" y="126">Gamo – English</text>
+  <text class="s" x="115" y="143">7,866 pairs · all data</text>
+  <rect x="20" y="162" width="190" height="46" rx="8" fill="#f6f8fa" stroke="#d0d7de" stroke-width="1.5"/>
+  <text class="t" x="115" y="182">Gofa – English</text>
+  <text class="s" x="115" y="199">7,928 pairs · all data</text>
+  <rect x="20" y="218" width="190" height="56" rx="8" fill="#fff8c5" stroke="#d4a72c" stroke-width="1.5"/>
+  <text class="t" x="115" y="238">Dawuro – English</text>
+  <text class="s" x="115" y="256">7,804 pairs · split</text>
 
-  <rect x="290" y="110" width="190" height="80" rx="10" fill="#f6f8fa" stroke="#d0d7de" stroke-width="1.5"/>
-  <text class="t" x="385" y="140">Mixed training set</text>
-  <text class="s" x="385" y="160">related languages pooled</text>
-  <text class="s" x="385" y="176">shared BPE vocabulary</text>
+  <rect x="260" y="105" width="190" height="80" rx="10" fill="#ddf4ff" stroke="#54aeff" stroke-width="1.5"/>
+  <text class="t" x="355" y="133">Multilingual training</text>
+  <text class="t" x="355" y="150">corpus</text>
+  <text class="s" x="355" y="170">+ Dawuro training split</text>
 
-  <rect x="530" y="110" width="170" height="80" rx="10" fill="#f6f8fa" stroke="#d0d7de" stroke-width="1.5"/>
-  <text class="t" x="615" y="145">Transformer</text>
-  <text class="s" x="615" y="165">encoder – decoder</text>
+  <rect x="490" y="105" width="150" height="80" rx="10" fill="#f6f8fa" stroke="#d0d7de" stroke-width="1.5"/>
+  <text class="t" x="565" y="133">Shared BPE</text>
+  <text class="s" x="565" y="155">subword vocabulary</text>
 
-  <rect x="750" y="75" width="190" height="150" rx="10" fill="#ffffff" stroke="#d0d7de" stroke-width="1.5"/>
-  <text class="t" x="845" y="102">BLEU vs. baseline</text>
-  <text class="s" x="845" y="132" style="font-size:14px">Gamo → En  +5.3</text>
-  <text class="s" x="845" y="160" style="font-size:14px">Gofa → En  +5.0</text>
-  <text class="s" x="845" y="188" style="font-size:14px">Dawuro → En  +3.7</text>
+  <rect x="680" y="85" width="260" height="120" rx="10" fill="#dafbe1" stroke="#4ac26b" stroke-width="1.5"/>
+  <text class="t" x="810" y="112">Transformer encoder–decoder</text>
+  <text class="s" x="810" y="134">6 + 6 layers · d 512 · dropout 0.3</text>
+  <text class="s" x="810" y="152">Adam 1e-4 · 3,072-token batches</text>
+  <text class="s" x="810" y="178" style="font-weight:600;fill:#0969da">→ English</text>
 
-  <path class="ln" d="M220,85 C255,85 255,140 287,140"/>
-  <path class="ln" d="M220,150 H287"/>
-  <path class="ln" d="M220,215 C255,215 255,160 287,160"/>
-  <path class="ln" d="M480,150 H527"/>
-  <path class="ln" d="M700,150 H747"/>
-  <text class="s" x="480" y="280">Gamo, Gofa and Dawuro are closely related Ometo (Omotic) languages of southern Ethiopia</text>
+  <rect x="680" y="230" width="260" height="44" rx="8" fill="#fff8c5" stroke="#d4a72c" stroke-width="1.5"/>
+  <text class="t" x="810" y="250">Evaluate on Dawuro test set</text>
+  <text class="s" x="810" y="266">BLEU · TER · chrF++</text>
+
+  <path class="ln" d="M210,73 C240,73 235,130 257,130"/>
+  <path class="ln" d="M210,129 C235,129 235,140 257,140"/>
+  <path class="ln" d="M210,185 C235,185 235,150 257,150"/>
+  <path class="ln" d="M210,240 C240,240 235,165 257,165"/>
+  <path class="ln" d="M450,145 H487"/>
+  <path class="ln" d="M640,145 H677"/>
+  <path class="ln" d="M810,205 V227"/>
+  <path class="ln" d="M210,262 C450,300 600,280 677,255"/>
+  <text class="s" x="480" y="316">Exp 4 shown. Exp 2 uses Wolaita + the target only; Exp 3 trains on Wolaita alone; Exp 1 fine-tunes a Wolaita parent model.</text>
 </svg>

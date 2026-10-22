@@ -1,0 +1,17 @@
+experiment,pair,train,dev,test
+Exp1,Wolaita-English,21555,5388,
+Exp1,Dawuro-English,4996,1248,1560
+Exp1,Gamo-English,5035,1258,1573
+Exp1,Gofa-English,5077,1267,1584
+Exp2,Wolaita-English,26943,,
+Exp2,Dawuro-English,4996,1248,1560
+Exp2,Gamo-English,5035,1258,1573
+Exp2,Gofa-English,5077,1267,1584
+Exp3,Wolaita-English,26943,,
+Exp3,Dawuro-English,,1561,6243
+Exp3,Gamo-English,,1574,6293
+Exp3,Gofa-English,,1584,6335
+Exp4,Wolaita-English,26943,,
+Exp4,Dawuro-English,4996,1248,1560
+Exp4,Gamo-English,5035,1258,1573
+Exp4,Gofa-English,5077,1584,1267
