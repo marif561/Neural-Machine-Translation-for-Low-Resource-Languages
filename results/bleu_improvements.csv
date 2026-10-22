@@ -1,0 +1,4 @@
+source_language,target_language,bleu_improvement_over_baseline,source
+Gamo,English,5.3,paper abstract
+Gofa,English,5.0,paper abstract
+Dawuro,English,3.7,paper abstract

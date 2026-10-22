@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.ipynb_checkpoints/
+runs/
+outputs/
+.DS_Store
+
+# Real parallel corpora are not redistributed — keep only the synthetic toy data
+data/*/
+!data/toy/

@@ -1,0 +1,20 @@
+# Transformer settings for low-resource NMT.
+# These are common defaults for small parallel corpora, NOT values taken from the paper;
+# replace them with the paper's configuration where it differs.
+model:
+  d_model: 512
+  heads: 8
+  layers: 6
+  ff_dim: 2048
+  dropout: 0.3          # higher dropout helps on small corpora
+
+train:
+  vocab_size: 8000      # joint SentencePiece BPE vocabulary
+  max_len: 128          # tokens per sentence, including BOS/EOS
+  max_tokens: 4096      # tokens per batch
+  epochs: 100
+  patience: 10          # early stopping on average dev BLEU
+  warmup_steps: 4000
+  lr_factor: 2.0
+  label_smoothing: 0.1
+  clip_norm: 1.0

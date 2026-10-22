@@ -1,0 +1,18 @@
+# Tiny model for smoke tests on the synthetic toy corpus (runs in about a minute on CPU)
+model:
+  d_model: 64
+  heads: 4
+  layers: 2
+  ff_dim: 128
+  dropout: 0.1
+
+train:
+  vocab_size: 120
+  max_len: 32
+  max_tokens: 512
+  epochs: 3
+  patience: 3
+  warmup_steps: 50
+  lr_factor: 1.0
+  label_smoothing: 0.1
+  clip_norm: 1.0

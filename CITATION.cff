@@ -1,0 +1,39 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite the paper below."
+title: "Neural Machine Translation for Low-Resource Ethiopian Languages with Mixed Training"
+repository-code: "https://github.com/marif561/Neural-Machine-Translation-for-Low-Resource-Languages"
+license: MIT
+authors:
+  - family-names: Tonja
+    given-names: Atnafu Lambebo
+  - family-names: Kolesnikova
+    given-names: Olga
+  - family-names: Arif
+    given-names: Muhammad
+  - family-names: Gelbukh
+    given-names: Alexander
+  - family-names: Sidorov
+    given-names: Grigori
+keywords: [neural machine translation, low-resource languages, Ethiopian languages, Gamo, Gofa, Dawuro, transformer]
+preferred-citation:
+  type: conference-paper
+  title: "Improving Neural Machine Translation for Low Resource Languages Using Mixed Training: The Case of Ethiopian Languages"
+  collection-title: "Advances in Computational Intelligence. MICAI 2022"
+  publisher:
+    name: "Springer, Cham"
+  volume: 13613
+  start: 30
+  end: 40
+  year: 2022
+  doi: "10.1007/978-3-031-19496-2_3"
+  authors:
+    - family-names: Tonja
+      given-names: Atnafu Lambebo
+    - family-names: Kolesnikova
+      given-names: Olga
+    - family-names: Arif
+      given-names: Muhammad
+    - family-names: Gelbukh
+      given-names: Alexander
+    - family-names: Sidorov
+      given-names: Grigori

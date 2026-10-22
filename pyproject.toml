@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ethiomt"
+version = "1.0.0"
+description = "Transformer NMT with mixed training for low-resource Ethiopian languages (Gamo, Gofa, Dawuro)"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [
+  { name = "Atnafu Lambebo Tonja" }, { name = "Olga Kolesnikova" }, { name = "Muhammad Arif" },
+  { name = "Alexander Gelbukh" }, { name = "Grigori Sidorov" },
+]
+dependencies = ["numpy", "pyyaml", "sentencepiece>=0.1.99", "sacrebleu>=2.3"]
+
+[project.optional-dependencies]
+train = ["torch>=2.0"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
